@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "broker": "node scripts/mqtt-broker.mjs",
+        "simulate": "node scripts/esp32-simulator.mjs",
+        "test:broker": "node --test tests/broker/*.test.mjs",
+        "test:js": "node --test tests/js/*.test.mjs",
+        "test": "node --test tests/js/*.test.mjs tests/broker/*.test.mjs"
+    },
+    "dependencies": {
+        "aedes": "^1.2.0",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "concurrently": "^9.0.1",
+        "mqtt": "^5.16.1"
+    }
+}
