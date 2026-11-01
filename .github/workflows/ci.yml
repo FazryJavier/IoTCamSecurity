@@ -76,15 +76,21 @@ jobs:
       - name: Use example credentials
         run: cp esp32_camera_mjpeg_multiclient/home_wifi_multi.example.h esp32_camera_mjpeg_multiclient/home_wifi_multi.h
 
-      - uses: arduino/compile-sketches@v1
+      - uses: arduino/setup-arduino-cli@v2
+
+      - name: Cache Arduino cores
+        uses: actions/cache@v4
         with:
-          fqbn: esp32:esp32:esp32cam
-          platforms: |
-            - name: esp32:esp32
-              source-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
-              version: 2.0.17
-          libraries: |
-            - name: PubSubClient
-          sketch-paths: |
-            - esp32_camera_mjpeg_multiclient
-          enable-deltas-report: false
+          path: ~/.arduino15
+          key: arduino-esp32-2.0.17-pubsubclient
+
+      - name: Install ESP32 core and libraries
+        env:
+          ESP32_INDEX: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+        run: |
+          arduino-cli core update-index --additional-urls "$ESP32_INDEX"
+          arduino-cli core install esp32:esp32@2.0.17 --additional-urls "$ESP32_INDEX"
+          arduino-cli lib install PubSubClient
+
+      - name: Compile
+        run: arduino-cli compile --fqbn esp32:esp32:esp32cam --warnings default esp32_camera_mjpeg_multiclient
